@@ -9,7 +9,7 @@ class HKerDigital;
 #define TP_NORMAL 0
 #define TP_WAITA  1
 #define TP_WAITB  2
-typedef struct
+typedef struct//
 {
     ushort wWaitCount;//双位置的判断时间
     HKerDigital* pDigitalA,*pDigitalB;
