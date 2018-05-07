@@ -165,7 +165,6 @@ void KERNEL_EXPORT deManualSet(DBHANDLE dbHandle)
     default:
         break;
     }
-
 }
 
 
@@ -194,7 +193,6 @@ void KERNEL_EXPORT ack(DBHANDLE dbHandle)
 }
 
 //获取数据
-
 bool KERNEL_EXPORT getAttr(DBHANDLE dbHandle,ushort wAttrib,void* pValue)
 {
     if(!isValidDbHandle(dbHandle))
