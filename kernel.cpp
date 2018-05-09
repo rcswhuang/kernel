@@ -7,7 +7,8 @@
 #include "kerdigital.h"
 #include "time.h"
 #include "userdb.h"
-
+#include "hkernelapi.h"
+#include <QList>
 Kernel::Kernel()
 {
 }
@@ -17,7 +18,13 @@ Kernel::Kernel()
 
 /////////////////////////////////////////////////全局函数定义//////////////////////////////////////////////
 HKerDataBase kerDataBase;
+QList<HKerDataBase*> g_tempKerDBList; //临时数据库
 
+HKerDataBase* getKerDBByType(uchar btType)
+{
+    if(TYPE_DB_REALTIME == btType)
+        return &kerDataBase;
+}
 
 /////////////////////////////////////////////////////对外接口////////////////////////////////////////////
 
@@ -99,10 +106,23 @@ ushort KERNEL_EXPORT getGlossaryNum()
 
 
 //获取当前厂站和测点 信息   存疑
-DBHANDLE KERNEL_EXPORT getDbHandle(ushort wStation,uchar btType,ushort wNo)
+DBHANDLE KERNEL_EXPORT getDbHandle(ushort wStation,uchar btType,ushort wNo,uchar btDbType)
 {
     DBHANDLE dbHandle;
-    dbHandle.pPT = NULL;
+    dbHandle.pPt = NULL;
+    HKerDataBase* kerDb = getKerDBByType(btDbType);
+    if(!kerDb)
+    {
+        dbHandle.pSt= NULL;
+        return dbHandle;
+    }
+    dbHandle.pSt = (HKerStation*)kerDb->getKerStation(wStation);
+    if(dbHandle.pSt && btType != TYPE_NULL)
+    {
+        dbHandle.pPt = ((HKerStation*)dbHandle.pSt)->kerWord(btType,wNo);
+        if(dbHandle.pPt == NULL)
+            dbHandle.pSt = NULL;
+    }
     return dbHandle;
 }
 
@@ -110,18 +130,18 @@ DBHANDLE KERNEL_EXPORT getDbHandle(ushort wStation,uchar btType,ushort wNo)
 DBHANDLE KERNEL_EXPORT findDbHandle(ushort wStationID,uchar btType,ushort wIndex)
 {
     DBHANDLE dbHandle;
-    dbHandle.pPT = NULL;
+    dbHandle.pPt = NULL;
     if(TYPE_NULL == btType)
     {
-        dbHandle.pST = kerDataBase.findKerStation(wIndex);
+        dbHandle.pSt = kerDataBase.findKerStation(wIndex);
         return dbHandle;
     }
-    dbHandle.pST = kerDataBase.getKerStation(wStationID);
-    if(dbHandle.pST)
+    dbHandle.pSt = kerDataBase.getKerStation(wStationID);
+    if(dbHandle.pSt)
     {
-        dbHandle.pST = ((HKerStation*)dbHandle.pST)->findKerWord(btType,wIndex);
-        if(!dbHandle.pST)
-            dbHandle.pST = NULL;
+        dbHandle.pPt = ((HKerStation*)dbHandle.pST)->findKerWord(btType,wIndex);
+        if(!dbHandle.pPt)
+            dbHandle.pSt = NULL;
     }
     return dbHandle;
 }
@@ -129,7 +149,7 @@ DBHANDLE KERNEL_EXPORT findDbHandle(ushort wStationID,uchar btType,ushort wIndex
 //当前厂站测点是否有效
 bool KERNEL_EXPORT isValidDbHandle(DBHANDLE dbHandle)
 {
-    return (dbHandle.pST != NULL);
+    return (dbHandle.pSt != NULL);
 }
 
 

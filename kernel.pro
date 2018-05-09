@@ -9,8 +9,9 @@ QT       -= gui
 TARGET = kernel
 TEMPLATE = lib
 DEFINES += KERNEL_DLL
-DESTDIR = $$(WF_ROOT)\lib\debug
-INCLUDEPATH += $$(WF_ROOT)/include
+DESTDIR = ../lib
+INCLUDEPATH +=  \
+                ../include
 
 
 SOURCES += kernel.cpp \
@@ -24,7 +25,8 @@ SOURCES += kernel.cpp \
     glossary.cpp \
     pointterm.cpp \
     kerstation.cpp \
-    locktype.cpp
+    locktype.cpp \
+    hkernelhandle.cpp
 
 HEADERS += kernel.h\
     kerdatabase.h \
@@ -38,14 +40,15 @@ HEADERS += kernel.h\
     pointterm.h \
     kerstation.h \
     locktype.h \
-    kernelapi.h
+    kernelapi.h \
+    hkernelhandle.h
 
 win32{
     UI_DIR = temp/ui
     MOC_DIR = temp/moc
     OBJECTS_DIR	= temp/obj
 
-    LIBS += $$(WF_ROOT)/lib/debug/datafile.lib
+    LIBS += ../lib/datafile.lib
 }
 
 unix {
