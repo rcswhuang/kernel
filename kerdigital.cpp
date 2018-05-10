@@ -305,7 +305,7 @@ bool HKerDigital::getAttr(quint16 wAttrib, void *pValue, HKerStation *pStation, 
     case ATTR_DGT_RSNO: *(uchar*)pValue = digital.wRSNo;break;
     case ATTR_DGT_RNO: *(uchar*)pValue = digital.wRNo;break;
     case ATTR_DGT_MEASURE: *(uchar*)pValue = digital.wFormulaID;break;
-    case ATTR_DGT_4_VALUE:
+    case ATTR_DGT_4_STATE_VALUE:
     {
         if(m_pTPDigital)
         {
@@ -419,7 +419,7 @@ bool HKerDigital::doSetAttr(quint16 wAttrib, void *pValue, HKerStation *pStation
     case ATTR_DGT_RSNO:            digital.wRSNo = *(ushort*)pValue;break;
     case ATTR_DGT_RNO:             digital.wRNo = *(ushort*)pValue;break;
     case ATTR_DGT_MEASURE:         digital.wFormulaID = *(quint8*)pValue;break;
-    case ATTR_DGT_4_VALUE:
+    case ATTR_DGT_4_STATE_VALUE:
     {
         if(m_pTPDigital && m_pTPDigital->pDigitalA && m_pTPDigital->pDigitalB)
         {

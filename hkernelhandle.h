@@ -2,7 +2,7 @@
 #define HKERNELHANDLE_H
 
 #include "kernel.h"
-#include "kernelapi.h"
+#include "hkernelapi.h"
 #include"kerdatabase.h"
 #include"kerstation.h"
 #include "kerword.h"

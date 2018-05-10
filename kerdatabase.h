@@ -65,14 +65,13 @@ public:
     GLOSSARY* getGlossary(ushort wGlossaryGroupID,uchar btType,ushort wGlossaryID);
     //插件操作
 
-
 public:
-    ushort wTotalStation;
-    ushort wTotalPointTerm;
-    ushort wTotalLockType;
-    ushort wTotalGlossaryGroup;
-    ushort wTotalGlossary;
-    ushort wTotalUserDb;
+    ushort wTotalStation;//厂站
+    ushort wTotalPointTerm; //测点类型
+    ushort wTotalLockType; //锁类型
+    ushort wTotalGlossaryGroup; //操作术语组
+    ushort wTotalGlossary; //操作术语项
+    ushort wTotalUserDb; //插件
     int nDataBaseID;
     QTimer *dsTimer; //定时判断双位置遥信的状态
 public:
@@ -80,7 +79,7 @@ public:
     HLockType* pLockType;
     HPointTerm*  pPointTerm;//测点类型
     HGlossaryGroup* pGlossaryGroup;//操作术语
-    HUserDb* pUserDb; //插件代理
+    HUserDb* m_pUserDb; //插件代理
 signals:
 
 public slots:

@@ -1,14 +1,16 @@
 #include "hkernelhandle.h"
-
+#include "kerstation.h"
 
 HKernelHandle* HKernelHandle::m_pInstance = NULL;
 HKernelHandle* HKernelHandle::Instance()
 {
     if(!m_pInstance)
     {
-        m_pInstance = HKernelHandle();
+        m_pInstance = new HKernelHandle();
         m_pInstance->dbDataInit();
     }
+
+    return m_pInstance;
 }
 
 
@@ -64,13 +66,11 @@ bool HKernelHandle::dbDataInit()
 void HKernelHandle::dbDataEnd()
 {
     //kerDataBase.saveData();
-    HUserDb* pUserDb = kerDataBase.pUserDb;
+    HUserDb* pUserDb = kerDataBase.m_pUserDb;
     for(int i = 0; i < kerDataBase.wTotalUserDb;i++,pUserDb++)
     {
-        pUserDb->exitLibrary();
+        pUserDb->exitProc();
     }
-
-
     kerDataBase.saveAnalogue();
     kerDataBase.saveDigital();
     kerDataBase.freeData();
@@ -97,7 +97,6 @@ ushort HKernelHandle::getGlossaryNum()
 {
     return kerDataBase.wTotalGlossary;
 }
-
 
 //获取当前厂站和测点 信息
 DBHANDLE HKernelHandle::getDbHandle(ushort wStation,uchar btType,ushort wNo,uchar btDbType)
@@ -133,7 +132,7 @@ DBHANDLE HKernelHandle::findDbHandle(ushort wStationID,uchar btType,ushort wInde
     dbHandle.pSt = kerDataBase.getKerStation(wStationID);
     if(dbHandle.pSt)
     {
-        dbHandle.pPt = ((HKerStation*)dbHandle.pST)->findKerWord(btType,wIndex);
+        dbHandle.pPt = (HKerWord*)((HKerStation*)dbHandle.pSt)->findKerWord(btType,wIndex);
         if(!dbHandle.pPt)
             dbHandle.pSt = NULL;
     }
@@ -149,31 +148,31 @@ bool HKernelHandle::isValidDbHandle(DBHANDLE dbHandle)
 //人工置数部分
 void HKernelHandle::analogueManualSet(DBHANDLE dbHandle,float fValue)
 {
-    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPT || TYPE_ANALOGUE != ((HKerAnalogue*)dbHandle.pPT)->getType())
+    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPt || TYPE_ANALOGUE != ((HKerAnalogue*)dbHandle.pPt)->getType())
         return;
-    HKerAnalogue* pKerAnalogue = (HKerAnalogue*)dbHandle.pPT;
-    pKerAnalogue->manualSet(fValue,(HKerStation*)dbHandle.pST);
+    HKerAnalogue* pKerAnalogue = (HKerAnalogue*)dbHandle.pPt;
+    pKerAnalogue->manualSet(fValue,(HKerStation*)dbHandle.pSt);
 }
 
 void HKernelHandle::digitalManualSet(DBHANDLE dbHandle,uchar btValue)
 {
-    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPT || TYPE_DIGITAL != ((HKerDigital*)dbHandle.pPT)->getType())
+    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPt || TYPE_DIGITAL != ((HKerDigital*)dbHandle.pPt)->getType())
         return;
-    HKerDigital* pKerDigital = (HKerDigital*)dbHandle.pPT;
-    pKerDigital->manualSet(btValue,(HKerStation*)dbHandle.pST);
+    HKerDigital* pKerDigital = (HKerDigital*)dbHandle.pPt;
+    pKerDigital->manualSet(btValue,(HKerStation*)dbHandle.pSt);
 }
 
 void HKernelHandle::deManualSet(DBHANDLE dbHandle)
 {
-    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPT)
+    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPt)
         return;
-    switch(((HKerWord*)dbHandle.pPT)->getType())
+    switch(((HKerWord*)dbHandle.pPt)->getType())
     {
     case TYPE_ANALOGUE:
-        ((HKerAnalogue*)dbHandle.pPT)->deManualSet((HKerStation*)dbHandle.pST);
+        ((HKerAnalogue*)dbHandle.pPt)->deManualSet((HKerStation*)dbHandle.pSt);
         break;
     case TYPE_DIGITAL:
-        ((HKerDigital*)dbHandle.pPT)->deManualSet((HKerStation*)dbHandle.pST);
+        ((HKerDigital*)dbHandle.pPt)->deManualSet((HKerStation*)dbHandle.pSt);
         break;
     default:
         break;
@@ -185,19 +184,19 @@ void HKernelHandle::enableFalg(DBHANDLE dbHandle,ushort wFlag,bool bEnable)
 {
     if(!isValidDbHandle(dbHandle))
         return;
-    ((HKerWord*)dbHandle.pPT)->enableFlag(wFlag,bEnable,(HKerStation*)dbHandle.pST);
+    ((HKerWord*)dbHandle.pPt)->enableFlag(wFlag,bEnable,(HKerStation*)dbHandle.pSt);
 }
 
 //确认信息
 void HKernelHandle::ack(DBHANDLE dbHandle)
 {
-    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPT)
+    if(!isValidDbHandle(dbHandle) || NULL == dbHandle.pPt)
         return;
     time_t lTime = time(NULL);
-    switch(((HKerWord*)dbHandle.pPT)->getType())
+    switch(((HKerWord*)dbHandle.pPt)->getType())
     {
     case TYPE_DIGITAL:
-        ((HKerDigital*)dbHandle.pST)->ack((HKerStation*)dbHandle.pST,(long)lTime);
+        ((HKerDigital*)dbHandle.pSt)->ack((HKerStation*)dbHandle.pSt,(long)lTime);
         break;
     default:
         break;
@@ -209,9 +208,9 @@ bool HKernelHandle::getAttr(DBHANDLE dbHandle,ushort wAttrib,void* pValue)
 {
     if(!isValidDbHandle(dbHandle))
         return false;
-    if(!dbHandle.pPT)
-        return ((HKerStation*)dbHandle.pST)->getAttr(wAttrib,pValue,0);
-    return ((HKerWord*)dbHandle.pPT)->getAttr(wAttrib,pValue,(HKerStation*)dbHandle.pST,0);
+    if(!dbHandle.pPt)
+        return ((HKerStation*)dbHandle.pSt)->getAttr(wAttrib,pValue,0);
+    return ((HKerWord*)dbHandle.pPt)->getAttr(wAttrib,pValue,(HKerStation*)dbHandle.pSt,0);
 }
 
 //设置数据
@@ -219,9 +218,9 @@ bool HKernelHandle::setAttr(DBHANDLE dbHandle,ushort wAttrib,void* pValue)
 {
     if(!isValidDbHandle(dbHandle))
         return false;
-    if(!dbHandle.pPT)
-        return ((HKerStation*)dbHandle.pST)->setAttr(wAttrib,pValue);
-    return ((HKerWord*)dbHandle.pPT)->setAttr(wAttrib,pValue,(HKerStation*)dbHandle.pST);
+    if(!dbHandle.pPt)
+        return ((HKerStation*)dbHandle.pSt)->setAttr(wAttrib,pValue);
+    return ((HKerWord*)dbHandle.pPt)->setAttr(wAttrib,pValue,(HKerStation*)dbHandle.pSt);
 }
 
 //写入到实时库
@@ -232,19 +231,19 @@ void HKernelHandle::kernelEnterDB(uchar btType,ushort wStationIndex,ushort wPoin
 
 HKerDataBase* HKernelHandle::getKerDBByType(uchar btType)
 {
-
+    return NULL;
 }
 
 
 /////////////////////////////////////////////////////////////////接口部分//////////////////////////////////////////////////////////////////////////////////////
 ushort KERNEL_EXPORT stationIndex2Addr(ushort wStationIndex)
 {
-    HKernelHandle::Instance()->stationIndex2Addr(wStationIndex);
+    return HKernelHandle::Instance()->stationIndex2Addr(wStationIndex);
 }
 
 ushort KERNEL_EXPORT stationAddr2Index(ushort wStationAddr)
 {
-    HKernelHandle::Instance()->stationAddr2Index(wStationAddr);
+    return HKernelHandle::Instance()->stationAddr2Index(wStationAddr);
 }
 /*
 //

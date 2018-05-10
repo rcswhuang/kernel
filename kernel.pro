@@ -14,7 +14,8 @@ INCLUDEPATH +=  \
                 ../include
 
 
-SOURCES += kernel.cpp \
+SOURCES += \
+#kernel.cpp \
     kerdatabase.cpp \
     kerword.cpp \
     kergroup.cpp \
@@ -28,7 +29,8 @@ SOURCES += kernel.cpp \
     locktype.cpp \
     hkernelhandle.cpp
 
-HEADERS += kernel.h\
+HEADERS +=  \
+    #kernel.h\
     kerdatabase.h \
     kerword.h \
     kergroup.h \
@@ -40,7 +42,6 @@ HEADERS += kernel.h\
     pointterm.h \
     kerstation.h \
     locktype.h \
-    kernelapi.h \
     hkernelhandle.h
 
 win32{

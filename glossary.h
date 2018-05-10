@@ -4,7 +4,8 @@
 /*
  * 测点操作术语类
 */
-#include "kernelapi.h"
+#include "hkernelapi.h"
+#include "publicdata.h"
 #include <QList>
 
 class HGlossary

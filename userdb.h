@@ -2,7 +2,7 @@
 #define HUSERDB_H
 #include <QObject>
 #include <QLibrary>
-#include "kernelapi.h"
+#include "hkernelapi.h"
 
 class HUserDb:public QObject
 {
@@ -10,18 +10,18 @@ class HUserDb:public QObject
 public:
     HUserDb();
     ~HUserDb();
-
 public:
     bool funcName(char* szFuncName);//获取插件名称
     bool loadData();//加载数据
     bool saveData();//保存数据
-    bool initLibrary();//初始化插件
-    bool exitLibrary(); //退出插件
-    void updateData(UDBHANDLE udbHandle,UDBDATAPARAM* udbParam);//发送数据
-    void showWindow(bool bShow);//显示窗口
+    bool initProc();//初始化插件
+    bool exitProc(); //退出插件
+    void updateData(void* handle,UPDATAPOINT* point);//发送数据
+    void showMsgWindow(bool bShow);//显示窗口
+    void showConfigWindow();
 public:
     QString strUserDBName;
-    USERDBPROC userdbProc;
+    PLUGINPROC pluginProc;//为所有插件统一处理函数地址，回调函数
 };
 
 #endif // HUSERDB_H

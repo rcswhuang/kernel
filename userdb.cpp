@@ -2,7 +2,7 @@
 #include <QLibrary>
 HUserDb::HUserDb()
 {
-    userdbProc = NULL;
+    pluginProc = NULL;
 }
 
 HUserDb::~HUserDb()
@@ -12,35 +12,40 @@ HUserDb::~HUserDb()
 
 bool HUserDb::funcName(char* szFuncName)
 {
-    return userdbProc(UDB_PLUGINNAME,0,(ulong)szFuncName);
+    return pluginProc(PLG_PROCNAME,0,(ulong)szFuncName);
 }
 
 bool HUserDb::loadData()
 {
-    return userdbProc(UDB_LOADDATA,0,0);
+    return pluginProc(PLG_LOADDATA,0,0);
 }
 
 bool HUserDb::saveData()
 {
-    return userdbProc(UDB_SAVEDATA,0,0);
+    return pluginProc(PLG_SAVEDATA,0,0);
 }
 
-bool HUserDb::initLibrary()
+bool HUserDb::initProc()
 {
-    return userdbProc(UDB_INITLIBRARY,0,0);
+    return pluginProc(PLG_INITPROC,0,0);
 }
 
-bool HUserDb::exitLibrary()
+bool HUserDb::exitProc()
 {
-    return userdbProc(UDB_EXITLIBRARY,0,0);
+    return pluginProc(PLG_EXITPROC,0,0);
 }
 
-void HUserDb::updateData(UDBHANDLE udbHandle,UDBDATAPARAM* udbParam)
+void HUserDb::updateData(void* handle,UPDATAPOINT* point)
 {
-    userdbProc(UDB_UPDATEDATA,(ulong)udbHandle,(ulong)udbParam);
+    pluginProc(PLG_CHANGEDYX,(unsigned int)handle,(long)point);
 }
 
-void HUserDb::showWindow(bool bShow)
+void HUserDb::showMsgWindow(bool bShow)
 {
-    userdbProc(UDB_SHOWWINDOW,0,(ulong)bShow);
+    pluginProc(PLG_SHOWMSGWIN,0,(ulong)bShow);
+}
+
+void HUserDb::showConfigWindow()
+{
+    pluginProc(PLG_SHOWCONFIGWIN,0,0);
 }

@@ -1,5 +1,5 @@
 ﻿#include "kerdatabase.h"
-#include "kernelapi.h"
+#include "hkernelapi.h"
 #include "pointterm.h"
 #include "locktype.h"
 #include "glossary.h"
@@ -11,6 +11,7 @@ HKerDataBase::HKerDataBase(QObject *parent) : QObject(parent)
     pKerStation = NULL;
     dsTimer = NULL;
     dsTimer = new QTimer(this);
+    m_pUserDb = NULL;
     //connect(dsTimer,SIGNAL(timeout()),this,SLOT(dsDigitalUpdate()));
     //dsTimer->start(1000);
 }
@@ -50,10 +51,10 @@ void HKerDataBase::freeData()
     }
 
     wTotalUserDb = 0;
-    if(pUserDb)
+    if(m_pUserDb)
     {
-        delete [] pUserDb;
-        pUserDb = NULL;
+        delete []m_pUserDb;
+        m_pUserDb = NULL;
     }
 
 }
@@ -148,7 +149,7 @@ bool HKerDataBase::loadData()
         }
         if(false == pKerS->loadData(fileHandle))
         {
-            delete [] pKerS;
+            delete[ ]pKerS;
             break;
         }
     }
@@ -163,35 +164,46 @@ bool HKerDataBase::loadData()
 
     //加载插件代码  用 MACRO这个来代替  加载Qt编译出来的动态库
     char szPluginPath[128];
-    getDataFilePath(DFPATH_PLUGIN,szPluginPath);
-    QString strPluginName = QString(szPluginPath);
+    getDataFilePath(DFPATH_PLUGIN,szPluginPath);//已经是d:/wf/plugin文件夹
+    QString strPluginName = QString(szPluginPath) + "/" + "run";//防止在d:/wf/plugin/run文件夹里面的dll才加载
     QDir dir(strPluginName);
     if(dir.exists())
     {
         QStringList strPluginList = dir.entryList(QDir::Files);
-        pUserDb = new HUserDb[strPluginList.count()];
         wTotalUserDb = strPluginList.count();
-        HUserDb* userDb = pUserDb;
+        m_pUserDb = new HUserDb[wTotalUserDb];
+        HUserDb* userDb = m_pUserDb;
         for(int i = 0; i< strPluginList.count();i++,userDb++)
         {
             strPluginName += strPluginList[i];
             if(!QLibrary::isLibrary(strPluginName))
             {
-                delete (pUserDb+wTotalUserDb);//删掉最后一个空间就可以了
+                delete (m_pUserDb+wTotalUserDb);//删掉最后一个空间就可以了
                 wTotalUserDb--;
+                userDb--;
+                continue;
             }
             QLibrary library(strPluginName);
             if(library.load())
             {
-                USERDBPROC userDbProc = (USERDBPROC)library.resolve(UDBCALLBACKPROCNAME);
-                if(!userDbProc)
+                PLUGINPROC pluginProc = (PLUGINPROC)library.resolve("pluginProc");
+                if(!pluginProc)
                     library.unload();
                 else
                 {
                     userDb->strUserDBName = strPluginName;
-                    userDb->userdbProc = userDbProc;
-                    userDb->initLibrary();
+                    userDb->pluginProc = pluginProc;
+                    userDb->initProc();
                 }
+            }
+        }
+        if(m_pUserDb)
+        {
+            for(int i = 0;i < wTotalUserDb;i++)
+            {
+                HUserDb* pUserDb = (HUserDb*)(m_pUserDb+i);
+                if(!pUserDb) continue;
+                pUserDb->loadData();
             }
         }
     }

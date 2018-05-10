@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QList>
-#include "kernelapi.h"
+#include "hkernelapi.h"
 #include "kerdigital.h"
 class HKerWord;
 //class HKerDigital;
