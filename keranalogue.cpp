@@ -3,7 +3,7 @@
 #include "publicdata.h"
 HKerAnalogue::HKerAnalogue()
 {
-
+    analogue.fValue = 0;
 }
 
 HKerAnalogue::~HKerAnalogue()
@@ -98,7 +98,7 @@ bool HKerAnalogue::getAttr(quint16 wAttrib, void *pValue, HKerStation *pStation 
     switch(wAttrib)
     {
     case ATTR_ANA_SNO :*(ushort*)pValue = analogue.wStationID;break;
-    case ATTR_ANA_NO  :  *(ushort*)pValue = analogue.wStationID;break;
+    case ATTR_ANA_NO  :  *(ushort*)pValue = analogue.wAnalogueID;break;
     case ATTR_ANA_NAME :
     {
         qstrcpy((char*)pValue,analogue.szAnalogueName);

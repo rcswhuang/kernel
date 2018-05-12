@@ -4,7 +4,8 @@
 #include "kerstation.h"
 HKerDigital::HKerDigital()
 {
-
+    m_pTPDigital = NULL;
+    digital.btRunValue = 0;
 }
 
 HKerDigital::~HKerDigital()
@@ -129,7 +130,6 @@ void HKerDigital::doWrite(quint8 btValue,HKerStation* pStation,long lTime)
             break;
         }
     }
-
 
     digital.btRunValue = btValue;
     checkValue(digital.btRunValue,pStation,lTime);
@@ -287,8 +287,9 @@ bool HKerDigital::getAttr(quint16 wAttrib, void *pValue, HKerStation *pStation, 
     {
         qstrcpy((char*)pValue, digital.szEquipmentID);//设备编号
     }
+        break;
     case ATTR_DGT_GROUPID: *(ushort*)pValue = digital.wGroupID;break;
-    case ATTR_DGT_POWERGRADE: *(ushort*)pValue = digital.nPowerGrade;break;
+    case ATTR_DGT_POWERGRADE: *(int*)pValue = digital.nPowerGrade;break;
     case ATTR_DGT_GLOSSARYID: *(ushort*)pValue = digital.wGlossaryID;break;
     case ATTR_DGT_RULEFENID: *(ushort*)pValue = digital.wRuleFenID;break;
     case ATTR_DGT_RULEHEID: *(ushort*)pValue = digital.wRuleHeID;break;
@@ -300,7 +301,7 @@ bool HKerDigital::getAttr(quint16 wAttrib, void *pValue, HKerStation *pStation, 
     case ATTR_DGT_SENDFLAG: *(ushort*)pValue = digital.wSendFlag;break;
     case ATTR_DGT_DOUBLEDGTID: *(ushort*)pValue = digital.wDoubleDgtID;break;
     case ATTR_DGT_OPFLAG: *(uchar*)pValue = digital.btOPFlag;break;
-    case ATTR_DGT_FORMULAID: *(ushort*)pValue = digital.wFormulaID;//设备组
+    case ATTR_DGT_FORMULAID: *(ushort*)pValue = digital.wFormulaID;break;//设备组
     case ATTR_DGT_VALUE: *(uchar*)pValue = digital.btRunValue;break;//还要加判计算遥信的情况
     case ATTR_DGT_RSNO: *(uchar*)pValue = digital.wRSNo;break;
     case ATTR_DGT_RNO: *(uchar*)pValue = digital.wRNo;break;
@@ -358,7 +359,7 @@ bool HKerDigital::getAttr(quint16 wAttrib, void *pValue, HKerStation *pStation, 
             *(uchar*)pValue = btValue1 + ((btValue1 == btValue2)?2:0);
         }
         else
-            getAttr(wAttrib,pValue,pStation,0);
+            getAttr(ATTR_DGT_VALUE,pValue,pStation,0);
     }
         break;
     default:

@@ -7,7 +7,7 @@ HKernelHandle* HKernelHandle::Instance()
     if(!m_pInstance)
     {
         m_pInstance = new HKernelHandle();
-        m_pInstance->dbDataInit();
+        //m_pInstance->dbDataInit();
     }
 
     return m_pInstance;
@@ -231,6 +231,8 @@ void HKernelHandle::kernelEnterDB(uchar btType,ushort wStationIndex,ushort wPoin
 
 HKerDataBase* HKernelHandle::getKerDBByType(uchar btType)
 {
+    if(TYPE_DB_REALTIME == btType)
+        return &kerDataBase;
     return NULL;
 }
 
