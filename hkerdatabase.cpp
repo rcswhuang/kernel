@@ -1,8 +1,8 @@
-﻿#include "kerdatabase.h"
+﻿#include "hkerdatabase.h"
 #include "hkernelapi.h"
-#include "pointterm.h"
-#include "locktype.h"
-#include "glossary.h"
+#include "hpointterm.h"
+#include "hlocktype.h"
+#include "hopterm.h"
 #include <QDir>
 
 HKerDataBase::HKerDataBase(QObject *parent) : QObject(parent)
@@ -43,11 +43,11 @@ void HKerDataBase::freeData()
         pPointTerm = NULL;
     }
 
-    wTotalGlossaryGroup = 0;
-    if(pGlossaryGroup)
+    wTotalOpTermGroup = 0;
+    if(pOpTermGroup)
     {
-        delete [] pGlossaryGroup;
-        pGlossaryGroup = NULL;
+        delete [] pOpTermGroup;
+        pOpTermGroup = NULL;
     }
 
     wTotalUserDb = 0;
@@ -83,41 +83,26 @@ bool HKerDataBase::loadData()
     }
 
     //操作术语
-    openDB(FILE_TYPE_GLOSSARYGROUP);
-    loadDataFileHeader(FILE_TYPE_GLOSSARYGROUP,&dataFileHandle);
-    wTotalGlossaryGroup = dataFileHandle.wTotal;
-    pGlossaryGroup = new HGlossaryGroup[wTotalGlossaryGroup];
-    HGlossaryGroup* glossaryGroup = pGlossaryGroup;
-    for(int i = 0; i < wTotalGlossaryGroup;i++,glossaryGroup++)
+    openDB(FILE_TYPE_OPTERMGROUP);
+    loadDataFileHeader(FILE_TYPE_OPTERMGROUP,&dataFileHandle);
+    wTotalOpTermGroup = dataFileHandle.wTotal;
+    pOpTermGroup = new HOpTermGroup[wTotalOpTermGroup];
+    HOpTermGroup* opTermGroup = pOpTermGroup;
+    for(int i = 0; i < wTotalOpTermGroup;i++,opTermGroup++)
     {
-        if(false == loadDBRecord(FILE_TYPE_GLOSSARYGROUP,++fileHandle.wGlossaryGroup,&glossaryGroup->glossaryGroup))
+        if(false == loadDBRecord(FILE_TYPE_OPTERMGROUP,++fileHandle.wOpTermGroup,&opTermGroup->opTermGroup))
         {
-            delete[] pGlossaryGroup;
-            pGlossaryGroup = NULL;
+            delete[] pOpTermGroup;
+            pOpTermGroup = NULL;
             break;
         }
-        if(false == pGlossaryGroup->loadData(fileHandle))
+        if(false == pOpTermGroup->loadData(fileHandle))
         {
-            delete[] pGlossaryGroup;
-            pGlossaryGroup = NULL;
-            break;
-        }
-    }
-    /* //需要增加默认操作术语吗？
-    bool bfind = false;
-    for(int i = 0; i < m_pGlossaryGroupList.count();i++)
-    {
-        HGlossaryGroup* pGlossaryGroup = (HGlossaryGroup*)m_pGlossaryGroupList[i];
-        if(pGlossaryGroup->glossaryGroup.btGlossaryGroupType == TYPE_POINT_DEFAULT)
-        {
-            bfind = true;
+            delete[] pOpTermGroup;
+            pOpTermGroup = NULL;
             break;
         }
     }
-    if(!bfind)
-    {
-        //addGlossaryGroup(TYPE_POINT_DEFAULT);
-    }*/
 
     //锁类型
     openDB(FILE_TYPE_LOCKTYPE);
@@ -155,7 +140,7 @@ bool HKerDataBase::loadData()
     }
 
     closeDB(FILE_TYPE_POINTTERM);
-    closeDB(FILE_TYPE_GLOSSARYGROUP);
+    closeDB(FILE_TYPE_OPTERMGROUP);
     closeDB(FILE_TYPE_LOCKTYPE);
     closeDB(FILE_TYPE_STATION);
 
@@ -368,43 +353,43 @@ HPointTerm* HKerDataBase::findPointTerm(QString strPointTerm)
 }
 
 //操作术语
-ushort HKerDataBase::getGlossaryGroupNum()
+ushort HKerDataBase::getOpTermGroupNum()
 {
-    return wTotalGlossaryGroup;
+    return wTotalOpTermGroup;
 }
 
-ushort HKerDataBase::getGlossaryNum()
+ushort HKerDataBase::getOpTermNum()
 {
-    if(pGlossaryGroup == NULL)
+    if(pOpTermGroup == NULL)
         return 0;
-    ushort wGlossaryNum = 0;
-    HGlossaryGroup* glossaryGroup = pGlossaryGroup;
-    for(int i = 0; i < wTotalGlossaryGroup;i++,glossaryGroup++)
+    ushort wOpTermNum = 0;
+    HOpTermGroup* opTermGroup = pOpTermGroup;
+    for(int i = 0; i < wTotalOpTermGroup;i++,opTermGroup++)
     {
-        wGlossaryNum += glossaryGroup->glossaryNum();
+        wOpTermNum += opTermGroup->opTermNum();
     }
-    return wGlossaryNum;
+    return wOpTermNum;
 }
 
-HGlossaryGroup* HKerDataBase::getGlossaryGroup(ushort wNo)
+HOpTermGroup* HKerDataBase::getOpTermGroup(ushort wNo)
 {
-    if(pGlossaryGroup == NULL)
+    if(pOpTermGroup == NULL)
         return NULL;
-    HGlossaryGroup* glossaryGroup = pGlossaryGroup;
-    for(int i = 0; i < wTotalGlossaryGroup;i++,glossaryGroup++)
+    HOpTermGroup* opTermGroup = pOpTermGroup;
+    for(int i = 0; i < wTotalOpTermGroup;i++,opTermGroup++)
     {
-        if(glossaryGroup->glossaryGroupID() == wNo)
-            return glossaryGroup;
+        if(opTermGroup->opTermGroupID() == wNo)
+            return opTermGroup;
     }
     return NULL;
 }
 
-GLOSSARY* HKerDataBase::getGlossary(ushort wGlossaryGroupID,uchar btType,ushort wGlossaryID)
+OPTERM* HKerDataBase::getOpTerm(ushort wOpTermGroupID,uchar btType,ushort wOpTermID)
 {
-    HGlossaryGroup* glossaryGroup = getGlossaryGroup(wGlossaryGroupID);
-    if(glossaryGroup)
+    HOpTermGroup* opTermGroup = getOpTermGroup(wOpTermGroupID);
+    if(opTermGroup)
     {
-        return glossaryGroup->findGlossary(btType,wGlossaryID);
+        return opTermGroup->findOpTerm(btType,wOpTermID);
     }
     return NULL;
 }

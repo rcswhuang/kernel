@@ -1,4 +1,4 @@
-﻿#include "keranalogue.h"
+﻿#include "hkeranalogue.h"
 #include "time.h"
 #include "publicdata.h"
 HKerAnalogue::HKerAnalogue()

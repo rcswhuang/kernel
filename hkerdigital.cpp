@@ -1,7 +1,7 @@
-﻿#include "kerdigital.h"
+﻿#include "hkerdigital.h"
 #include "time.h"
 #include "publicdata.h"
-#include "kerstation.h"
+#include "hkerstation.h"
 HKerDigital::HKerDigital()
 {
     m_pTPDigital = NULL;
@@ -290,7 +290,7 @@ bool HKerDigital::getAttr(quint16 wAttrib, void *pValue, HKerStation *pStation, 
         break;
     case ATTR_DGT_GROUPID: *(ushort*)pValue = digital.wGroupID;break;
     case ATTR_DGT_POWERGRADE: *(int*)pValue = digital.nPowerGrade;break;
-    case ATTR_DGT_GLOSSARYID: *(ushort*)pValue = digital.wGlossaryID;break;
+    case ATTR_DGT_OPTERMID: *(ushort*)pValue = digital.wOpTermID;break;
     case ATTR_DGT_RULEFENID: *(ushort*)pValue = digital.wRuleFenID;break;
     case ATTR_DGT_RULEHEID: *(ushort*)pValue = digital.wRuleHeID;break;
     case ATTR_DGT_RULEJXFENID: *(ushort*)pValue = digital.wRuleJXFenID;break;
@@ -404,7 +404,7 @@ bool HKerDigital::doSetAttr(quint16 wAttrib, void *pValue, HKerStation *pStation
     }
     case ATTR_DGT_GROUPID:         digital.wGroupID = *(ushort*)pValue;break;
     case ATTR_DGT_POWERGRADE:      digital.nPowerGrade = *(ushort*)pValue;break;
-    case ATTR_DGT_GLOSSARYID:      digital.wGlossaryID = *(ushort*)pValue;break;
+    case ATTR_DGT_OPTERMID:        digital.wOpTermID = *(ushort*)pValue;break;
     case ATTR_DGT_RULEFENID:       digital.wRuleFenID = *(ushort*)pValue;break;
     case ATTR_DGT_RULEHEID:        digital.wRuleHeID = *(ushort*)pValue;break;
     case ATTR_DGT_RULEJXFENID:     digital.wRuleJXFenID = *(ushort*)pValue;break;

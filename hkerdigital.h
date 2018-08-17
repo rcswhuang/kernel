@@ -1,6 +1,6 @@
 ﻿#ifndef HKERDIGITAL_H
 #define HKERDIGITAL_H
-#include "kerword.h"
+#include "hkerword.h"
 #include "publicdata.h"
 //双位置遥信
 class HKerStation;

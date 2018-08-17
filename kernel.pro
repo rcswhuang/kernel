@@ -16,33 +16,33 @@ INCLUDEPATH +=  \
 
 SOURCES += \
 #kernel.cpp \
-    kerdatabase.cpp \
-    kerword.cpp \
-    kergroup.cpp \
-    kerdigital.cpp \
-    keranalogue.cpp \
-    userdb.cpp \
-    workdatabase.cpp \
-    glossary.cpp \
-    pointterm.cpp \
-    kerstation.cpp \
-    locktype.cpp \
-    hkernelhandle.cpp
+    hkernelhandle.cpp \
+    hopterm.cpp \
+    hkeranalogue.cpp \
+    hkerdatabase.cpp \
+    hkerdigital.cpp \
+    hkergroup.cpp \
+    hkerstation.cpp \
+    hkerword.cpp \
+    hlocktype.cpp \
+    hpointterm.cpp \
+    huserdb.cpp \
+    hworkdatabase.cpp
 
 HEADERS +=  \
     #kernel.h\
-    kerdatabase.h \
-    kerword.h \
-    kergroup.h \
-    kerdigital.h \
-    keranalogue.h \
-    userdb.h \
-    workdatabase.h \
-    glossary.h \
-    pointterm.h \
-    kerstation.h \
-    locktype.h \
-    hkernelhandle.h
+    hkernelhandle.h \
+    hopterm.h \
+    hkeranalogue.h \
+    hkerdatabase.h \
+    hkerdigital.h \
+    hkergroup.h \
+    hkerstation.h \
+    hkerword.h \
+    hlocktype.h \
+    hpointterm.h \
+    huserdb.h \
+    hworkdatabase.h
 
 win32{
     UI_DIR = temp/ui

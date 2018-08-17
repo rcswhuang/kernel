@@ -1,8 +1,8 @@
-﻿#include "kerstation.h"
-#include "keranalogue.h"
+﻿#include "hkerstation.h"
+#include "hkeranalogue.h"
 //#include "kerdigital.h"
-#include "kergroup.h"
-#include "locktype.h"
+#include "hkergroup.h"
+#include "hlocktype.h"
 
 HKerStation::HKerStation(QObject* parent):QObject(parent)
 {

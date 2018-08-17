@@ -1,6 +1,6 @@
 ﻿#ifndef HKERANALOGUE_H
 #define HKERANALOGUE_H
-#include "kerword.h"
+#include "hkerword.h"
 #include "publicdata.h"
 
 class HKerAnalogue : public HKerWord

@@ -1,4 +1,4 @@
-﻿#include "pointterm.h"
+﻿#include "hpointterm.h"
 
 HPointTerm::HPointTerm(QObject *parent) : QObject(parent)
 {

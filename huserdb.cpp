@@ -1,4 +1,4 @@
-﻿#include "userdb.h"
+﻿#include "huserdb.h"
 #include <QLibrary>
 HUserDb::HUserDb()
 {

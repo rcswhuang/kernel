@@ -1,5 +1,5 @@
 #include "hkernelhandle.h"
-#include "kerstation.h"
+#include "hkerstation.h"
 
 HKernelHandle* HKernelHandle::m_pInstance = NULL;
 HKernelHandle* HKernelHandle::Instance()
@@ -88,14 +88,14 @@ ushort HKernelHandle::getStationNum()
     return kerDataBase.wTotalStation;
 }
 
-ushort HKernelHandle::getGlossaryGroupNum()
+ushort HKernelHandle::getOpTermGroupNum()
 {
-    return kerDataBase.wTotalGlossaryGroup;
+    return kerDataBase.wTotalOpTermGroup;
 }
 
-ushort HKernelHandle::getGlossaryNum()
+ushort HKernelHandle::getOpTermNum()
 {
-    return kerDataBase.wTotalGlossary;
+    return kerDataBase.wTotalOpTerm;
 }
 
 //获取当前厂站和测点 信息
@@ -283,14 +283,14 @@ ushort KERNEL_EXPORT getStationNum()
     return HKernelHandle::Instance()->getStationNum();
 }
 
-ushort KERNEL_EXPORT getGlossaryGroupNum()
+ushort KERNEL_EXPORT getOpTermGroupNum()
 {
-    return HKernelHandle::Instance()->getGlossaryGroupNum();
+    return HKernelHandle::Instance()->getOpTermGroupNum();
 }
 
-ushort KERNEL_EXPORT getGlossaryNum()
+ushort KERNEL_EXPORT getOpTermNum()
 {
-    return HKernelHandle::Instance()->getGlossaryNum();
+    return HKernelHandle::Instance()->getOpTermNum();
 }
 
 //获取当前厂站和测点 信息   存疑

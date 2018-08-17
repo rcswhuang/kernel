@@ -3,13 +3,13 @@
 
 #include "kernel.h"
 #include "hkernelapi.h"
-#include"kerdatabase.h"
-#include"kerstation.h"
-#include "kerword.h"
-#include "keranalogue.h"
-#include "kerdigital.h"
+#include"hkerdatabase.h"
+#include"hkerstation.h"
+#include "hkerword.h"
+#include "hkeranalogue.h"
+#include "hkerdigital.h"
 #include "time.h"
-#include "userdb.h"
+#include "huserdb.h"
 #include "hkernelapi.h"
 #include <QList>
 
@@ -45,8 +45,8 @@ public:
     //获取相关数目
     ushort getStationNum();
 
-    ushort getGlossaryGroupNum();
-    ushort getGlossaryNum();
+    ushort getOpTermGroupNum();
+    ushort getOpTermNum();
 
     //获取当前厂站和测点
     DBHANDLE getDbHandle(ushort wStation,uchar btType,ushort wNo,uchar btDBType);

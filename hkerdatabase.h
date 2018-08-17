@@ -4,18 +4,18 @@
 #include <QObject>
 #include <QTimer>
 #include <QList>
-#include "kerstation.h"
-#include "kerword.h"
-#include "pointterm.h"
-#include "userdb.h"
-#include "glossary.h"
-#include "locktype.h"
-#include "kerdigital.h"
-#include "keranalogue.h"
+#include "hkerstation.h"
+#include "hkerword.h"
+#include "hpointterm.h"
+#include "huserdb.h"
+#include "hopterm.h"
+#include "hlocktype.h"
+#include "hkerdigital.h"
+#include "hkeranalogue.h"
 class HKerStation;//厂站
 class HLockType;
 class HPointTerm;//测点类型
-class HGlossaryGroup;//操作术语
+class HOpTermGroup;//操作术语
 class HUserDb;
 
 class HKerDataBase : public QObject
@@ -59,18 +59,18 @@ public:
     HPointTerm* findPointTerm(QString strPointTerm);
 
     //操作术语操作 不依赖厂站
-    ushort getGlossaryGroupNum();
-    ushort getGlossaryNum();
-    HGlossaryGroup* getGlossaryGroup(ushort wNo);
-    GLOSSARY* getGlossary(ushort wGlossaryGroupID,uchar btType,ushort wGlossaryID);
+    ushort getOpTermGroupNum();
+    ushort getOpTermNum();
+    HOpTermGroup* getOpTermGroup(ushort wNo);
+    OPTERM* getOpTerm(ushort wOpTermGroupID,uchar btType,ushort wOpTermID);
     //插件操作
 
 public:
     ushort wTotalStation;//厂站
     ushort wTotalPointTerm; //测点类型
     ushort wTotalLockType; //锁类型
-    ushort wTotalGlossaryGroup; //操作术语组
-    ushort wTotalGlossary; //操作术语项
+    ushort wTotalOpTermGroup; //操作术语组
+    ushort wTotalOpTerm; //操作术语项
     ushort wTotalUserDb; //插件
     int nDataBaseID;
     QTimer *dsTimer; //定时判断双位置遥信的状态
@@ -78,7 +78,7 @@ public:
     HKerStation* pKerStation;//厂站
     HLockType* pLockType;
     HPointTerm*  pPointTerm;//测点类型
-    HGlossaryGroup* pGlossaryGroup;//操作术语
+    HOpTermGroup* pOpTermGroup;//操作术语
     HUserDb* m_pUserDb; //插件代理
 signals:
 

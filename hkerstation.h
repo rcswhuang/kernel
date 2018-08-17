@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QList>
 #include "hkernelapi.h"
-#include "kerdigital.h"
+#include "hkerdigital.h"
 class HKerWord;
 //class HKerDigital;
 class HKerAnalogue;

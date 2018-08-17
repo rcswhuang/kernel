@@ -1,6 +1,6 @@
 ﻿#ifndef HKERGROUP_H
 #define HKERGROUP_H
-#include "kerword.h"
+#include "hkerword.h"
 #include "publicdata.h"
 class HKerStation;
 class HKerGroup : public HKerWord

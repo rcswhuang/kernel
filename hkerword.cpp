@@ -1,4 +1,4 @@
-﻿#include "kerword.h"
+﻿#include "hkerword.h"
 
 HKerWord::HKerWord()
 {

@@ -1,4 +1,4 @@
-#include "locktype.h"
+#include "hlocktype.h"
 
 HLockType::HLockType()
 {
