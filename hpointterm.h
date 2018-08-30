@@ -11,6 +11,7 @@ public:
     ~HPointTerm();
 
 public:
+    POINTTERM* getPointTerm();
     quint16 pointTermID();
     QString pointTermName();
     uchar   pointTermType();

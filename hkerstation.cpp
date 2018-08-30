@@ -6,92 +6,87 @@
 
 HKerStation::HKerStation(QObject* parent):QObject(parent)
 {
-    wTotalAnalogue = 0;
-    wTotalDigital = 0;
-    wTotalGroup = 0;
+    m_wTotalAnalogue = 0;
+    m_wTotalDigital = 0;
+    m_wTotalGroup = 0;
 
-    pKerAnalogue = NULL;//遥测存放的内存起始地址
-    pKerDigital = NULL;
-    pKerGroup = NULL;
+    m_pKerAnalogue = NULL;//遥测存放的内存起始地址
+    m_pKerDigital = NULL;
+    m_pKerGroup = NULL;
 }
 
 HKerStation::~HKerStation()
 {
-    wTotalAnalogue = 0;
-    wTotalDigital = 0;
-    wTotalGroup = 0;
+    m_wTotalAnalogue = 0;
+    m_wTotalDigital = 0;
+    m_wTotalGroup = 0;
 
 
-    if(pKerAnalogue)
+    if(m_pKerAnalogue)
     {
-        delete[] pKerAnalogue;
-        pKerAnalogue = NULL;
+        delete[] m_pKerAnalogue;
+        m_pKerAnalogue = NULL;
     }
-    if(pKerDigital)
+    if(m_pKerDigital)
     {
-        delete[] pKerDigital;
-        pKerDigital = NULL;
+        delete[] m_pKerDigital;
+        m_pKerDigital = NULL;
     }
 
-    if(pKerGroup)
+    if(m_pKerGroup)
     {
-        delete[] pKerGroup;
-        pKerGroup = NULL;
+        delete[] m_pKerGroup;
+        m_pKerGroup = NULL;
     }
 
 }
 
 bool HKerStation::loadData(FILEHANDLE &fileHandle)
 {
-    wTotalAnalogue = station.wAnalogueCounts;
-    wTotalDigital = station.wDigitalCounts;
-    wTotalGroup = station.wEquipmentGroupCounts;
+    m_wTotalAnalogue = station.wAnalogueCounts;
+    m_wTotalDigital = station.wDigitalCounts;
+    m_wTotalGroup = station.wEquipmentGroupCounts;
     //加载文件
     //间隔
-  /*  openDB(FILE_TYPE_EQUIPMENTGROUP);
-    pKerGroup = new HKerGroup[wTotalGroup];
-    HKerGroup* pKerG = pKerGroup;
-    for(int i = 0; i < wTotalGroup;i++)
+    int fd = openDB(FILE_TYPE_EQUIPMENTGROUP);
+    m_pKerGroup = new HKerGroup[m_wTotalGroup];
+    HKerGroup* pKerG = m_pKerGroup;
+    for(int i = 0; i < m_wTotalGroup;i++)
     {
-        if(false == loadDBRecord(FILE_TYPE_EQUIPMENTGROUP,++fileHandle.wEquipmentGroup,&pKerG->equipmentGroup))
+        if(false == loadDBRecord(fd,++fileHandle.wEquipmentGroup,&pKerG->equipmentGroup))
         {
-            delete pKerGroup;
-            pKerGroup = NULL;
-            return false;
+           continue;
         }
-    }*/
+    }
 
     //遥测
-    openDB(FILE_TYPE_ANALOGUE);
-    pKerAnalogue = new HKerAnalogue[wTotalAnalogue];
-    HKerAnalogue* pKerA = pKerAnalogue;
-    for(int i = 0; i < wTotalAnalogue;i++,pKerA++)
+    fd = openDB(FILE_TYPE_ANALOGUE);
+    m_pKerAnalogue = new HKerAnalogue[m_wTotalAnalogue];
+    HKerAnalogue* pKerA = m_pKerAnalogue;
+    for(int i = 0; i < m_wTotalAnalogue;i++,pKerA++)
     {
-        if(false == loadDBRecord(FILE_TYPE_ANALOGUE,++fileHandle.wAnalogue,&pKerA->analogue))
+        if(false == loadDBRecord(fd,++fileHandle.wAnalogue,&pKerA->analogue))
         {
-            delete pKerAnalogue;
-            return false;
+            continue;
         }
     }
 
     //遥信
-    openDB(FILE_TYPE_DIGITAL);
-    pKerDigital = new HKerDigital[wTotalDigital];
-    HKerDigital* pKerD = pKerDigital;
-    for(int i = 0; i < wTotalDigital;i++,pKerD++)
+    fd = openDB(FILE_TYPE_DIGITAL);
+    m_pKerDigital = new HKerDigital[m_wTotalDigital];
+    HKerDigital* pKerD = m_pKerDigital;
+    for(int i = 0; i < m_wTotalDigital;i++,pKerD++)
     {
-        if(false == loadDBRecord(FILE_TYPE_DIGITAL,++fileHandle.wDigital,&pKerD->digital))
+        if(false == loadDBRecord(fd,++fileHandle.wDigital,&pKerD->digital))
         {
-            delete[] pKerDigital;
-            pKerDigital = NULL;
-            return false;
+            continue;
         }
     }
 
     //加载双位置遥信
-    pKerD = pKerDigital;
+    pKerD = m_pKerDigital;
     HKerDigital* pKerD1 = NULL;
-    for(int i = 0; i < wTotalDigital;i++,pKerD++)
+    for(int i = 0; i < m_wTotalDigital;i++,pKerD++)
     {
         if(pKerD->digital.wDoubleDgtID == (ushort)-1)
             continue;
@@ -129,30 +124,33 @@ bool HKerStation::loadData(FILEHANDLE &fileHandle)
 void HKerStation::saveData(FILEHANDLE &fileHandle)
 {
     //间隔
-    createDB(FILE_TYPE_EQUIPMENTGROUP);
-    HKerGroup* pKerG = pKerGroup;
-    for(int i = 0; i < wTotalGroup;i++)
+    int fd = createDB(FILE_TYPE_EQUIPMENTGROUP);
+    HKerGroup* pKerG = m_pKerGroup;
+    for(int i = 0; i < m_wTotalGroup;i++)
     {
-        if(false == saveDBRecord(FILE_TYPE_EQUIPMENTGROUP,++fileHandle.wEquipmentGroup,&pKerG->equipmentGroup))
+        if(false == saveDBRecord(fd,++fileHandle.wEquipmentGroup,&pKerG->equipmentGroup))
         {
             break;
         }
     }
 
     //遥测
-    createDB(FILE_TYPE_ANALOGUE);
-    HKerAnalogue* pKerA = pKerAnalogue;
-    for(int i = 0; i < wTotalAnalogue;i++,pKerA++)
+    fd = createDB(FILE_TYPE_ANALOGUE);
+    HKerAnalogue* pKerA = m_pKerAnalogue;
+    for(int i = 0; i < m_wTotalAnalogue;i++,pKerA++)
     {
-        if(false == saveDBRecord(FILE_TYPE_ANALOGUE,++fileHandle.wAnalogue,&pKerA->analogue)){   break;  }
+        if(false == saveDBRecord(fd,++fileHandle.wAnalogue,&pKerA->analogue))
+        {
+            break;
+        }
     }
 
     //遥信
-    createDB(FILE_TYPE_DIGITAL);
-    HKerDigital* pKerD = pKerDigital;
-    for(int i = 0; i < wTotalDigital;i++,pKerD++)
+    fd = createDB(FILE_TYPE_DIGITAL);
+    HKerDigital* pKerD = m_pKerDigital;
+    for(int i = 0; i < m_wTotalDigital;i++,pKerD++)
     {
-        if(false == saveDBRecord(FILE_TYPE_DIGITAL,++fileHandle.wDigital,&pKerD->digital))
+        if(false == saveDBRecord(fd,++fileHandle.wDigital,&pKerD->digital))
         {
             break;
         }
@@ -197,10 +195,10 @@ HKerWord* HKerStation::kerWord(quint8 btType,quint16 wNo)
 
 HKerAnalogue* HKerStation::kerAnalogue(quint16 wNo)
 {
-    if(NULL == pKerAnalogue)
+    if(NULL == m_pKerAnalogue)
         return NULL;
-    HKerAnalogue* pKerAna = (HKerAnalogue*)pKerAnalogue;
-    for(int i = 0; i < wTotalAnalogue;i++,pKerAna++)
+    HKerAnalogue* pKerAna = (HKerAnalogue*)m_pKerAnalogue;
+    for(int i = 0; i < m_wTotalAnalogue;i++,pKerAna++)
     {
         if(pKerAna->getNo() == wNo)
             return pKerAna;
@@ -210,10 +208,10 @@ HKerAnalogue* HKerStation::kerAnalogue(quint16 wNo)
 
 HKerDigital* HKerStation::kerDigital(quint16 wNo)
 {
-    if(NULL == pKerDigital)
+    if(NULL == m_pKerDigital)
         return NULL;
-    HKerDigital* pKerDig = (HKerDigital*)pKerDigital;
-    for(int i = 0; i < wTotalDigital;i++,pKerDig++)
+    HKerDigital* pKerDig = (HKerDigital*)m_pKerDigital;
+    for(int i = 0; i < m_wTotalDigital;i++,pKerDig++)
     {
         if(pKerDig->getNo() == wNo)
             return pKerDig;
@@ -223,10 +221,10 @@ HKerDigital* HKerStation::kerDigital(quint16 wNo)
 
 HKerGroup* HKerStation::kerGroup(quint16 wNo)
 {
-    if(NULL == pKerGroup)
+    if(NULL == m_pKerGroup)
         return NULL;
-    HKerGroup* pKerG = (HKerGroup*)pKerGroup;
-    for(int i =0; i < wTotalGroup;i++,pKerG++)
+    HKerGroup* pKerG = (HKerGroup*)m_pKerGroup;
+    for(int i =0; i < m_wTotalGroup;i++,pKerG++)
     {
         if(pKerG->getNo() == wNo)
             return pKerG;
@@ -263,23 +261,23 @@ HKerWord* HKerStation::findKerWord(quint8 btType,quint16 wIndex)
 
 HKerAnalogue* HKerStation::findKerAnalogue(quint16 wIndex)
 {
-    if(NULL == pKerAnalogue || wIndex > wTotalAnalogue)
+    if(NULL == m_pKerAnalogue || wIndex > m_wTotalAnalogue)
         return NULL;
-    return pKerAnalogue + wIndex;
+    return m_pKerAnalogue + wIndex;
 }
 
 HKerDigital* HKerStation::findKerDigital(quint16 wIndex)
 {
-    if(NULL == pKerDigital || wIndex > wTotalDigital)
+    if(NULL == m_pKerDigital || wIndex > m_wTotalDigital)
         return NULL;
-    return pKerDigital + wIndex;
+    return m_pKerDigital + wIndex;
 }
 
 HKerGroup* HKerStation::findKerGroup(quint16 wIndex)
 {
-    if(NULL == pKerGroup || wIndex > wTotalGroup)
+    if(NULL == m_pKerGroup || wIndex > m_wTotalGroup)
         return NULL;
-    return pKerGroup + wIndex;
+    return m_pKerGroup + wIndex;
 }
 
 bool HKerStation::getAttr(quint16 wAttrib,void* pValue,quint32 size)

@@ -9,6 +9,10 @@ HOpTerm::~HOpTerm()
 {
 
 }
+OPTERM* HOpTerm::opTermMe()
+{
+    return &opTerm;
+}
 
 ushort  HOpTerm::opTermGroupID()
 {
@@ -34,31 +38,31 @@ QString HOpTerm::opTermName()
 ///////////////////////////////////////////////HOpTermGroup///////////////////////////
 HOpTermGroup::HOpTermGroup()
 {
-    wTotalOpTerm = 0;
+    m_wTotalOpTerm = 0;
 }
 
 HOpTermGroup::~HOpTermGroup()
 {
-    wTotalOpTerm = 0;
-    if(pOpTerm)
+    m_wTotalOpTerm = 0;
+    if(m_pOpTerm)
     {
-        delete[] pOpTerm;
-        pOpTerm = NULL;
+        delete[] m_pOpTerm;
+        m_pOpTerm = NULL;
     }
 }
 
 bool HOpTermGroup::loadData(FILEHANDLE &fileHandle)
 {
-    openDB(FILE_TYPE_OPTERM);
-    wTotalOpTerm = opTermGroup.wOpTermCounts;
-    pOpTerm = new OPTERM[wTotalOpTerm];
-    OPTERM* opTerm = pOpTerm;
-    for(int i = 0; i < wTotalOpTerm;i++,opTerm++)
+    int fd = openDB(FILE_TYPE_OPTERM);
+    m_wTotalOpTerm = opTermGroup.wOpTermCounts;
+    m_pOpTerm = new HOpTerm[m_wTotalOpTerm];
+    HOpTerm* pOpTerm = m_pOpTerm;
+    for(int i = 0; i < m_wTotalOpTerm;i++,pOpTerm++)
     {
-        if(false == loadDBRecord(FILE_TYPE_OPTERM,++fileHandle.wOpTerm,opTerm))
+        if(false == loadDBRecord(fd,++fileHandle.wOpTerm,pOpTerm->opTermMe()))
         {
             delete pOpTerm;
-            return false;
+            continue;
         }
     }
     closeDB(FILE_TYPE_OPTERM);
@@ -67,23 +71,23 @@ bool HOpTermGroup::loadData(FILEHANDLE &fileHandle)
 
 void HOpTermGroup::saveData(FILEHANDLE &fileHandle)
 {
-    createDB(FILE_TYPE_OPTERM);
-    OPTERM* opTerm = pOpTerm;;
-    for(int i = 0; i < wTotalOpTerm;i++,opTerm++)
+    int fd = createDB(FILE_TYPE_OPTERM);
+    HOpTerm* pOpTerm = m_pOpTerm;;
+    for(int i = 0; i < m_wTotalOpTerm;i++,pOpTerm++)
     {
-        saveDBRecord(FILE_TYPE_OPTERM,++fileHandle.wOpTerm,opTerm);
+        saveDBRecord(fd,++fileHandle.wOpTerm,&pOpTerm->opTermMe());
     }
     closeDB(FILE_TYPE_OPTERM);
 }
 
-OPTERM* HOpTermGroup::findOpTerm(uchar btOpTermType,ushort wOpTermID)
+HOpTerm* HOpTermGroup::findOpTerm(uchar btOpTermType,ushort wOpTermID)
 {
-    if(wTotalOpTerm == 0) return NULL;
-    OPTERM* opTerm = pOpTerm;
-    for(int i = 0; i < wTotalOpTerm;i++)
+    if(m_wTotalOpTerm == 0) return NULL;
+    HOpTerm* pOpTerm = m_pOpTerm;
+    for(int i = 0; i < m_wTotalOpTerm;i++)
     {
-        if(opTerm->wOpTermID = wOpTermID && opTerm->btOpTermType == btOpTermType)
-            return opTerm;
+        if(pOpTerm->opTermID() == wOpTermID && pOpTerm->opTermType() == btOpTermType)
+            return pOpTerm;
     }
     return NULL;
 }

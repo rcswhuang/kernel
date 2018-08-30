@@ -67,51 +67,52 @@ bool HKerDataBase::loadData()
     DATAFILEHEADER dataFileHandle;
 
     //测点类型
-    openDB(FILE_TYPE_POINTTERM);
-    loadDataFileHeader(FILE_TYPE_POINTTERM,&dataFileHandle);
+    int fd = openDB(FILE_TYPE_POINTTERM);
+    loadDataFileHeader(fd,&dataFileHandle);
     wTotalPointTerm = dataFileHandle.wTotal;
     pPointTerm = new HPointTerm[wTotalPointTerm];
     HPointTerm* pointTerm = pPointTerm;
     for(int i = 0; i < wTotalPointTerm;i++,pointTerm++)
     {
-        if(false == loadDBRecord(FILE_TYPE_POINTTERM,++fileHandle.wPointTerm,&pointTerm->pointTerm))
+        if(false == loadDBRecord(fd,++fileHandle.wPointType,&pointTerm->pointTerm))
         {
             delete[] pPointTerm;
             pPointTerm = NULL;
-            break;
+            continue;
         }
     }
 
     //操作术语
-    openDB(FILE_TYPE_OPTERMGROUP);
-    loadDataFileHeader(FILE_TYPE_OPTERMGROUP,&dataFileHandle);
+    fd = openDB(FILE_TYPE_OPTERMGROUP);
+    loadDataFileHeader(fd,&dataFileHandle);
     wTotalOpTermGroup = dataFileHandle.wTotal;
     pOpTermGroup = new HOpTermGroup[wTotalOpTermGroup];
     HOpTermGroup* opTermGroup = pOpTermGroup;
     for(int i = 0; i < wTotalOpTermGroup;i++,opTermGroup++)
     {
-        if(false == loadDBRecord(FILE_TYPE_OPTERMGROUP,++fileHandle.wOpTermGroup,&opTermGroup->opTermGroup))
+        if(false == loadDBRecord(fd,++fileHandle.wOpTermGroup,&opTermGroup->opTermGroup))
         {
             delete[] pOpTermGroup;
             pOpTermGroup = NULL;
-            break;
+            continue;
         }
         if(false == pOpTermGroup->loadData(fileHandle))
         {
             delete[] pOpTermGroup;
             pOpTermGroup = NULL;
-            break;
+            continue;
         }
     }
 
     //锁类型
-    openDB(FILE_TYPE_LOCKTYPE);
+    fd = openDB(FILE_TYPE_LOCKTYPE);
+    loadDataFileHeader(fd,&dataFileHandle);
     wTotalLockType = dataFileHandle.wTotal;
     pLockType = new HLockType[wTotalLockType];
     HLockType* lockType = pLockType;
     for(int i = 0; i < wTotalLockType;i++)
     {
-        if(false == loadDBRecord(FILE_TYPE_LOCKTYPE,++fileHandle.wLockType,&lockType->wfLockType))
+        if(false == loadDBRecord(fd,++fileHandle.wLockType,&lockType->wfLockType))
         {
             delete[] pLockType;
             pLockType = NULL;

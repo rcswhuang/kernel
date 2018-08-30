@@ -12,6 +12,7 @@
 #include "hlocktype.h"
 #include "hkerdigital.h"
 #include "hkeranalogue.h"
+#include "huserdbapi.h"
 class HKerStation;//厂站
 class HLockType;
 class HPointTerm;//测点类型

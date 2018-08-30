@@ -18,6 +18,7 @@ public:
     ushort  opTermID();
     uchar   opTermType();
     QString opTermName();
+    OPTERM* opTermMe();
 private:
     OPTERM opTerm;
 };
@@ -32,10 +33,10 @@ public:
     bool loadData(FILEHANDLE &fileHandle);
     void saveData(FILEHANDLE &fileHandle);
 
-    OPTERM* findOpTerm(uchar wOpTermType,ushort wOpTermID);
+    HOpTerm* findOpTerm(uchar wOpTermType,ushort wOpTermID);
 
 public:
-    ushort  opTermNum(){return wTotalOpTerm;}
+    ushort  opTermNum(){return m_wTotalOpTerm;}
     ushort  opTermGroupID();
     QString opTermGroupName();
     uchar   opTermGroupType();
@@ -43,8 +44,8 @@ public:
 public:
     OPTERMGROUP opTermGroup;
 private:
-    ushort wTotalOpTerm;
-    OPTERM* pOpTerm;
+    ushort m_wTotalOpTerm;
+    HOpTerm* m_pOpTerm;
 
 };
 

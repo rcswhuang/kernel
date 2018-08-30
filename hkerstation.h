@@ -43,13 +43,13 @@ public:
     bool setAttr(quint16 wAttrib,void* pValue);
     bool doSetAttr(quint16 wAttrib,void* pValue);
 public:
-    quint16 wTotalAnalogue;
-    quint16 wTotalDigital;
-    quint16 wTotalGroup;
+    quint16 m_wTotalAnalogue;
+    quint16 m_wTotalDigital;
+    quint16 m_wTotalGroup;
 
-    HKerAnalogue* pKerAnalogue;//遥测存放的内存起始地址
-    HKerDigital* pKerDigital;
-    HKerGroup* pKerGroup;
+    HKerAnalogue* m_pKerAnalogue;//遥测存放的内存起始地址
+    HKerDigital* m_pKerDigital;
+    HKerGroup* m_pKerGroup;
 
     QList<TPDIGITAL*> m_pTpDigitalList;
 

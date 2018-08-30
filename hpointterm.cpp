@@ -10,6 +10,11 @@ HPointTerm::~HPointTerm()
 
 }
 
+POINTTERM* HPointTerm::getPointTerm()
+{
+    return &pointTerm;
+}
+
 quint16 HPointTerm::pointTermID()
 {
     return pointTerm.wTermID;

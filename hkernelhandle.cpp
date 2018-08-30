@@ -71,8 +71,8 @@ void HKernelHandle::dbDataEnd()
     {
         pUserDb->exitProc();
     }
-    kerDataBase.saveAnalogue();
-    kerDataBase.saveDigital();
+    kerDataBase.saveAnalogue();//保存当前遥测值
+    kerDataBase.saveDigital();//保存当前遥信值
     kerDataBase.freeData();
 }
 
