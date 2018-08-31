@@ -24,7 +24,7 @@ quint16 HKerGroup::getIndex(HKerStation* pStation)
 {
     if(pStation)
     {
-        return (this - pStation->pKerGroup);
+        return (this - pStation->m_pKerGroup);
     }
     return (quint16)-1;
 }

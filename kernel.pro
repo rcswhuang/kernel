@@ -27,7 +27,8 @@ SOURCES += \
     hlocktype.cpp \
     hpointterm.cpp \
     huserdb.cpp \
-    hworkdatabase.cpp
+    hworkdatabase.cpp \
+    hkercallback.cpp
 
 HEADERS +=  \
     #kernel.h\
@@ -42,17 +43,19 @@ HEADERS +=  \
     hlocktype.h \
     hpointterm.h \
     huserdb.h \
-    hworkdatabase.h
+    hworkdatabase.h \
+    hkercallback.h
+
+LIBS += -L../lib -ldatafile
 
 win32{
     UI_DIR = temp/ui
     MOC_DIR = temp/moc
     OBJECTS_DIR	= temp/obj
-
-    LIBS += ../lib/datafile.lib
 }
 
 unix {
-    #target.path = /usr/lib
-    #INSTALLS += target
+    UI_DIR = temp/ui
+    MOC_DIR = temp/moc
+    OBJECTS_DIR	= temp/obj
 }

@@ -75,7 +75,7 @@ void HOpTermGroup::saveData(FILEHANDLE &fileHandle)
     HOpTerm* pOpTerm = m_pOpTerm;;
     for(int i = 0; i < m_wTotalOpTerm;i++,pOpTerm++)
     {
-        saveDBRecord(fd,++fileHandle.wOpTerm,&pOpTerm->opTermMe());
+        saveDBRecord(fd,++fileHandle.wOpTerm,pOpTerm->opTermMe());
     }
     closeDB(FILE_TYPE_OPTERM);
 }

@@ -63,7 +63,7 @@ public:
     ushort getOpTermGroupNum();
     ushort getOpTermNum();
     HOpTermGroup* getOpTermGroup(ushort wNo);
-    OPTERM* getOpTerm(ushort wOpTermGroupID,uchar btType,ushort wOpTermID);
+    HOpTerm* getOpTerm(ushort wOpTermGroupID,uchar btType,ushort wOpTermID);
     //插件操作
 
 public:

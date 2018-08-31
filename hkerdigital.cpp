@@ -240,7 +240,7 @@ void HKerDigital::deManualSet(HKerStation* pStation)
 //属性信息
 quint16 HKerDigital::getIndex(HKerStation* pStation)
 {
-    return (this - pStation->pKerDigital);
+    return (this - pStation->m_pKerDigital);
 }
 
 quint16 HKerDigital::getNo()

@@ -177,8 +177,8 @@ bool HKerDataBase::loadData()
                     library.unload();
                 else
                 {
-                    userDb->strUserDBName = strPluginName;
-                    userDb->pluginProc = pluginProc;
+                    //userDb->strUserDBName = strPluginName;
+                    //userDb->pluginProc = pluginProc;
                     userDb->initProc();
                 }
             }
@@ -385,7 +385,7 @@ HOpTermGroup* HKerDataBase::getOpTermGroup(ushort wNo)
     return NULL;
 }
 
-OPTERM* HKerDataBase::getOpTerm(ushort wOpTermGroupID,uchar btType,ushort wOpTermID)
+HOpTerm* HKerDataBase::getOpTerm(ushort wOpTermGroupID,uchar btType,ushort wOpTermID)
 {
     HOpTermGroup* opTermGroup = getOpTermGroup(wOpTermGroupID);
     if(opTermGroup)
