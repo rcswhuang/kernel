@@ -68,13 +68,14 @@ bool HKerDataBase::loadData()
 
     //测点类型
     int fd = openDB(FILE_TYPE_POINTTERM);
-    loadDataFileHeader(fd,&dataFileHandle);
+    fileHandle.wPointTypeID = fd;
+    loadDataFileHeader(fileHandle.wPointTypeID,&dataFileHandle);
     wTotalPointTerm = dataFileHandle.wTotal;
     pPointTerm = new HPointTerm[wTotalPointTerm];
     HPointTerm* pointTerm = pPointTerm;
     for(int i = 0; i < wTotalPointTerm;i++,pointTerm++)
     {
-        if(false == loadDBRecord(fd,++fileHandle.wPointType,&pointTerm->pointTerm))
+        if((int)-1 == loadDBRecord(FILE_TYPE_POINTTERM,++fileHandle.wPointType,&pointTerm->pointTerm))
         {
             delete[] pPointTerm;
             pPointTerm = NULL;
@@ -84,13 +85,16 @@ bool HKerDataBase::loadData()
 
     //操作术语
     fd = openDB(FILE_TYPE_OPTERMGROUP);
-    loadDataFileHeader(fd,&dataFileHandle);
+    fileHandle.wOpTermGroupID = fd;
+    fd = openDB(FILE_TYPE_OPTERM);
+    fileHandle.wOpTermID = fd;
+    loadDataFileHeader(fileHandle.wOpTermGroupID,&dataFileHandle);
     wTotalOpTermGroup = dataFileHandle.wTotal;
     pOpTermGroup = new HOpTermGroup[wTotalOpTermGroup];
     HOpTermGroup* opTermGroup = pOpTermGroup;
     for(int i = 0; i < wTotalOpTermGroup;i++,opTermGroup++)
     {
-        if(false == loadDBRecord(fd,++fileHandle.wOpTermGroup,&opTermGroup->opTermGroup))
+        if(false == loadDBRecord(FILE_TYPE_OPTERMGROUP,++fileHandle.wOpTermGroup,&opTermGroup->opTermGroup))
         {
             delete[] pOpTermGroup;
             pOpTermGroup = NULL;
@@ -106,13 +110,14 @@ bool HKerDataBase::loadData()
 
     //锁类型
     fd = openDB(FILE_TYPE_LOCKTYPE);
-    loadDataFileHeader(fd,&dataFileHandle);
+    fileHandle.wLockTypeID = fd;
+    loadDataFileHeader(fileHandle.wLockTypeID,&dataFileHandle);
     wTotalLockType = dataFileHandle.wTotal;
     pLockType = new HLockType[wTotalLockType];
     HLockType* lockType = pLockType;
     for(int i = 0; i < wTotalLockType;i++)
     {
-        if(false == loadDBRecord(fd,++fileHandle.wLockType,&lockType->wfLockType))
+        if(false == loadDBRecord(FILE_TYPE_LOCKTYPE,++fileHandle.wLockType,&lockType->wfLockType))
         {
             delete[] pLockType;
             pLockType = NULL;
@@ -121,14 +126,24 @@ bool HKerDataBase::loadData()
     }
 
     //厂站信息
-    openDB(FILE_TYPE_STATION);
-    loadDataFileHeader(FILE_TYPE_STATION,&dataFileHandle);
+    fd = openDB(FILE_TYPE_STATION);
+    fileHandle.wStationID = fd;
+    fd = openDB(FILE_TYPE_EQUIPMENTGROUP);
+    fileHandle.wEquipmentGroup = fd;
+    fd = openDB(FILE_TYPE_ANALOGUE);
+    fileHandle.wAnalogueID = fd;
+    fd = openDB(FILE_TYPE_DIGITAL);
+    fileHandle.wDigitalID = fd;
+    fd = openDB(FILE_TYPE_DIGITALLOCKNO);
+    fileHandle.wDigitalLockNoID = fd;
+
+    loadDataFileHeader(fileHandle.wStationID,&dataFileHandle);
     wTotalStation = dataFileHandle.wTotal;
     pKerStation = new HKerStation[wTotalStation];
     HKerStation *pKerS = pKerStation;
     for(int i = 0 ; i < dataFileHandle.wTotal; i++,pKerS++)
     {
-        if (false == loadDBRecord(FILE_TYPE_STATION, ++fileHandle.wStation, &pKerS->station ) )
+        if((int)-1 == loadDBRecord(FILE_TYPE_STATION, ++fileHandle.wStation, &pKerS->station ) )
         {
             delete[] pKerS;
             break;
@@ -142,8 +157,12 @@ bool HKerDataBase::loadData()
 
     closeDB(FILE_TYPE_POINTTERM);
     closeDB(FILE_TYPE_OPTERMGROUP);
+    closeDB(FILE_TYPE_OPTERM);
     closeDB(FILE_TYPE_LOCKTYPE);
     closeDB(FILE_TYPE_STATION);
+    closeDB(FILE_TYPE_EQUIPMENTGROUP);
+    closeDB(FILE_TYPE_ANALOGUE);
+    closeDB(FILE_TYPE_DIGITAL);
 
 
 

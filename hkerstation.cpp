@@ -48,36 +48,33 @@ bool HKerStation::loadData(FILEHANDLE &fileHandle)
     m_wTotalGroup = station.wEquipmentGroupCounts;
     //加载文件
     //间隔
-    int fd = openDB(FILE_TYPE_EQUIPMENTGROUP);
     m_pKerGroup = new HKerGroup[m_wTotalGroup];
     HKerGroup* pKerG = m_pKerGroup;
     for(int i = 0; i < m_wTotalGroup;i++)
     {
-        if(false == loadDBRecord(fd,++fileHandle.wEquipmentGroup,&pKerG->equipmentGroup))
+        if(false == loadDBRecord(FILE_TYPE_EQUIPMENTGROUP,++fileHandle.wEquipmentGroup,&pKerG->equipmentGroup))
         {
            continue;
         }
     }
 
     //遥测
-    fd = openDB(FILE_TYPE_ANALOGUE);
     m_pKerAnalogue = new HKerAnalogue[m_wTotalAnalogue];
     HKerAnalogue* pKerA = m_pKerAnalogue;
     for(int i = 0; i < m_wTotalAnalogue;i++,pKerA++)
     {
-        if(false == loadDBRecord(fd,++fileHandle.wAnalogue,&pKerA->analogue))
+        if(false == loadDBRecord(FILE_TYPE_ANALOGUE,++fileHandle.wAnalogue,&pKerA->analogue))
         {
             continue;
         }
     }
 
     //遥信
-    fd = openDB(FILE_TYPE_DIGITAL);
     m_pKerDigital = new HKerDigital[m_wTotalDigital];
     HKerDigital* pKerD = m_pKerDigital;
     for(int i = 0; i < m_wTotalDigital;i++,pKerD++)
     {
-        if(false == loadDBRecord(fd,++fileHandle.wDigital,&pKerD->digital))
+        if(false == loadDBRecord(FILE_TYPE_DIGITAL,++fileHandle.wDigital,&pKerD->digital))
         {
             continue;
         }
@@ -115,9 +112,6 @@ bool HKerStation::loadData(FILEHANDLE &fileHandle)
         }
     }
 
-    closeDB(FILE_TYPE_EQUIPMENTGROUP);
-    closeDB(FILE_TYPE_ANALOGUE);
-    closeDB(FILE_TYPE_DIGITAL);
     return true;
 }
 

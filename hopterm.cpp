@@ -53,19 +53,17 @@ HOpTermGroup::~HOpTermGroup()
 
 bool HOpTermGroup::loadData(FILEHANDLE &fileHandle)
 {
-    int fd = openDB(FILE_TYPE_OPTERM);
     m_wTotalOpTerm = opTermGroup.wOpTermCounts;
     m_pOpTerm = new HOpTerm[m_wTotalOpTerm];
     HOpTerm* pOpTerm = m_pOpTerm;
     for(int i = 0; i < m_wTotalOpTerm;i++,pOpTerm++)
     {
-        if(false == loadDBRecord(fd,++fileHandle.wOpTerm,pOpTerm->opTermMe()))
+        if(false == loadDBRecord(fileHandle.wOpTermID,++fileHandle.wOpTerm,pOpTerm->opTermMe()))
         {
             delete pOpTerm;
             continue;
         }
     }
-    closeDB(FILE_TYPE_OPTERM);
     return true;
 }
 
